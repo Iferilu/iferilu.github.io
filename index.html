@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iferilu</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #ffffff;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+#stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+.name {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.menu a {
+  font-size: 18px;
+  color: #555;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.menu a:hover {
+  color: #000;
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="container">
+  <div class="name">Iferilu</div>
+  <div class="menu">
+    <a href="#about">个人介绍</a>
+    <a href="#works">作品合集</a>
+    <a href="#oc">OC</a>
+    <a href="#contact">联系我</a>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let w = window.innerWidth;
+let h = window.innerHeight;
+canvas.width = w;
+canvas.height = h;
+
+const stars = [];
+const starCount = 50;
+
+class Star {
+  constructor() {
+    this.init();
+  }
+  init() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.size = Math.random() * 4 + 5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = Math.random() * 0.7 + 0.3;
+    this.opacity = Math.random() * 0.2 + 0.15;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.y > h) {
+      this.y = -10;
+      this.x = Math.random() * w;
+    }
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.opacity;
+    ctx.fillStyle = '#d0d0d0';
+    const r = this.size;
+    const cx = this.x;
+    const cy = this.y;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const angle = i * Math.PI * 0.8 - Math.PI * 0.5;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < starCount; i++) {
+  stars.push(new Star());
+}
+
+function loop() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    s.update();
+    s.draw();
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+
+window.addEventListener('resize', () => {
+  w = window.innerWidth;
+  h = window.innerHeight;
+  canvas.width = w;
+  canvas.height = h;
+});
+</script>
+</body>
+</html>
